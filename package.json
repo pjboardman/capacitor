@@ -4,10 +4,11 @@
   "description": "'yet another Flux impl'",
   "main": "index.js",
   "scripts": {
+    "test": "babel-node ./node_modules/.bin/_mocha --recursive",
+    "test:watch": "onchange 'src/**/*.js' 'test/**/*.js' -- npm run test",
     "lint": "eslint .",
-    "test-only": "mocha --compilers js:babel-core/register --recursive",
-    "watch": "mocha --compilers js:babel-core/register --recursive -w",
-    "test": "npm run lint && npm run test-only"
+    "cover": "babel-node ./node_modules/.bin/isparta cover _mocha -- --recursive",
+    "validate": "npm run lint && npm run cover"
   },
   "repository": {
     "type": "git",
@@ -24,15 +25,25 @@
   },
   "homepage": "https://github.com/pjboardman/capacitor#readme",
   "devDependencies": {
+    "babel-cli": "^6.2.0",
     "babel-eslint": "^4.1.6",
     "chai": "^3.4.1",
+    "chai-as-promised": "^5.1.0",
     "eslint": "^1.10.2",
-    "mocha": "^2.3.4"
+    "isparta": "^4.0.0",
+    "mocha": "^2.3.4",
+    "sinon": "^1.17.2",
+    "sinon-as-promised": "^4.0.0",
+    "sinon-chai": "^2.8.0"
   },
   "dependencies": {
     "babel": "^6.1.18",
     "babel-core": "^6.2.1",
     "babel-preset-es2015": "^6.1.18",
-    "fbemitter": "^2.0.0"
+    "bluebird": "^3.0.5",
+    "fbemitter": "^2.0.0",
+    "invariant": "^2.2.0",
+    "lodash": "^3.10.1",
+    "seamless-immutable": "^4.0.2"
   }
 }
