@@ -8,7 +8,7 @@ let actions = new Registry({
   somethingElse: new Action()
 })
 
-let addedAction = actions.addByName('this-deleted')
+let addedAction = actions.add('this-deleted')
 
 //our 'logger'
 let watcher = (action, event) => {
@@ -28,5 +28,5 @@ _.forOwn(registered, (v, k) => {
 //send the actions
 actions.thingCreated.send({ payload: 'I am creating' })
 addedAction.send({ payload: 'I am deleting' })
-actions.send('this-updated', { payload: 'I am updating' })
+actions.send('thisUpdated', { payload: 'I am updating' })
 actions.send('somethingElse', { payload: 'This is something else' })
