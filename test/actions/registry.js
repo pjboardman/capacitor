@@ -1,6 +1,7 @@
 import { should } from '../chai.js'
 import sinon from 'sinon'
 import { Promise } from 'bluebird'
+import _ from 'lodash'
 
 import Registry from '../../src/action/registry.js'
 import Action from '../../src/action'
@@ -50,22 +51,34 @@ describe('action registry', () => {
     registry.thatOneToo.should.equal(action2)
   })
 
+  it('should return all actions registered', () => {
+    let registry = new Registry([
+      'thisOne',
+      'that-One'
+    ])
+
+    let actions = registry.all()
+    actions.thisOne.should.be.instanceOf(Action)
+    actions.thatOne.should.be.instanceOf(Action)
+    _.keys(actions).length.should.equal(2)
+  })
+
   describe('sending by type name', () => {
 
     it('should allow sending an action by type name', () => {
       let action = {
-        invoke: () => {}
+        send: () => {}
       }
       let promise = Promise.pending()
       promise.resolve()
-      let invoke = sinon.stub(action, 'invoke').returns(promise.promise)
+      let send = sinon.stub(action, 'send').returns(promise.promise)
       var mutation = { test: 'this' }
       let registry = new Registry()
 
       registry.addAction('testThis', action)
 
       return registry.send('testThis', mutation).then(() => {
-        invoke.should.be.calledWith(mutation)
+        send.should.be.calledWith(mutation)
       })
 
     })

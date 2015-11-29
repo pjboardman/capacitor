@@ -18,12 +18,23 @@ export default class Registry {
     return this._createActionByName(name)
   }
 
+  all() {
+    var actions = {}
+    _.forOwn(this, (v, k) => {
+      if (v instanceof Action) {
+        actions[k] = v
+      }
+    })
+
+    return actions
+  }
+
   send(name, mutation) {
     let normal = this._normalize(name)
     let action = this[normal]
 
     invariant(action, 'Could not find an action named ' + name)
-    return action.invoke(mutation)
+    return action.send(mutation)
   }
 
   _createActionByName(name, action) {

@@ -16,7 +16,7 @@ export default class Action {
     ]
   }
 
-  invoke(mutation) {
+  send(mutation) {
 
     let copy = Immutable(mutation)
 

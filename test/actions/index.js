@@ -21,13 +21,13 @@ describe('actions', () => {
     EventEmitter.restore()
   })
 
-  describe('invoking an action', () => {
+  describe('sending an action', () => {
 
     it('should return the mutation after dispatching has completed', () => {
       let mutation = { things: 'stuff' }
       let test = new Action()
 
-      test.invoke(mutation).should.become(mutation)
+      test.send(mutation).should.become(mutation)
     })
 
     it('should dispatch the state and mutation to all registered listeners', () => {
@@ -39,7 +39,7 @@ describe('actions', () => {
       test.register(listener1)
       test.register(listener2)
 
-      return test.invoke(mutation).then(() => {
+      return test.send(mutation).then(() => {
         listener1.should.be.calledWith(mutation)
         listener2.should.be.calledWith(mutation)
       })
@@ -55,7 +55,7 @@ describe('actions', () => {
       let token = test.register(listener2)
       test.unregister(token)
 
-      return test.invoke(mutation).then(() => {
+      return test.send(mutation).then(() => {
         listener1.should.be.calledWith(mutation)
         listener2.should.not.be.called
       })
@@ -70,7 +70,7 @@ describe('actions', () => {
       test.register(listener1)
       test.register(listener2)
 
-      return test.invoke(mutation)
+      return test.send(mutation)
         .then(() => { throw new Error('bad') })
         .catch(err => {
           err.message.should.equal('good')
@@ -99,7 +99,7 @@ describe('actions', () => {
 
       let test = new Action()
 
-      return test.invoke(mutation).then(() => {
+      return test.send(mutation).then(() => {
         let ro = emit.firstCall.args[1].mutation
         ro.test.should.equal('test')
 
