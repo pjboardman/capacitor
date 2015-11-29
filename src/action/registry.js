@@ -5,77 +5,63 @@ import Action from './index.js'
 export default class Registry {
 
   constructor(actions) {
+    this._actions = {}
     if (actions) {
       this._addActions(actions)
     }
   }
 
-  addAction(name, action) {
-    this._createActionByName(name, action)
-  }
-
-  addByName(name) {
-    return this._createActionByName(name)
+  add(name, action) {
+    return this._addAction(name, action)
   }
 
   all() {
-    var actions = {}
-    _.forOwn(this, (v, k) => {
-      if (v instanceof Action) {
-        actions[k] = v
-      }
-    })
-
-    return actions
+    return this._actions
   }
 
-  send(name, mutation) {
-    let normal = this._normalize(name)
-    let action = this[normal]
+  send(name, ...args) {
+    let action = this._actions[name]
 
     invariant(action, 'Could not find an action named ' + name)
-    return action.send(mutation)
-  }
 
-  _createActionByName(name, action) {
-    if (_.includes(name, '-')) {
-      name = this._normalize(name)
-    }
-
-    action = action || new Action()
-    this._transferActionToThis(name, action)
-    return action
-  }
-
-  _normalize(s) {
-    return _.camelCase(s)
+    return action.send(...args)
   }
 
   _addActions(actions) {
     if (_.isArray(actions)) {
-      this._createActionsByName(actions)
-    } else if (_.isPlainObject(actions)) {
-      this._transferActionsToThis(actions)
-    } else {
-      throw new Error('Registry created with unknown payload type')
+      actions = this._hydrate(actions)
+    } 
+    
+    invariant(_.isPlainObject(actions), 'Registry created with unknown payload type')
+
+    _.forOwn(actions, (v, k) => {
+      this._addAction(k, v)
+    })
+  }
+
+  _addAction(name, action) {
+    action = action || new Action()
+    this._actions[name] = action
+    Object.defineProperty(this, name, this._getPropertyDef(name))
+    return action
+  }
+
+  _getPropertyDef(name) {
+    return {
+      configurable: false,
+      enumerable: true,
+      get: () => {
+        return this._actions[name]
+      }
     }
   }
 
-  _createActionsByName(names) {
+  _hydrate(names) {
+    let actions = {}
     _.forEach(names, name => {
-      this._createActionByName(name)
+      actions[name] = undefined
     })
-  }
-  
-  _transferActionsToThis(actions) {
-    _.forOwn(actions, (v, k) => { 
-      this._transferActionToThis(k, v)
-    })
-  }
-
-  _transferActionToThis(name, action) {
-    let normal = this._normalize(name)
-    invariant(name === normal, 'Action name must be in the form ' + normal + ' or ' + _.kebabCase(normal) + '; received: ' + name)
-    this[name] = action
+    
+    return actions
   }
 }

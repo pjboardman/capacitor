@@ -21,7 +21,7 @@ describe('action registry', () => {
   it('should accept a collection of action names on construction', () => {
     let registry = new Registry([
       'thisOne',
-      'that-one'
+      'thatOne'
     ])
 
     registry.thisOne.should.be.instanceOf(Action)
@@ -32,29 +32,18 @@ describe('action registry', () => {
     let registry = new Registry()
 
     let thingsAndStuff = new Action()
-    registry.addAction('thingsAndStuff', thingsAndStuff)
-    registry.addAction('other-things', new Action())
+    thingsAndStuff.unique = true
+    registry.add('thingsAndStuff', thingsAndStuff)
+    registry.add('otherThings')
 
     registry.thingsAndStuff.should.equal(thingsAndStuff)
     registry.otherThings.should.be.instanceOf(Action)
   })
 
-  it('should allow actions to be created by name', () => {
-    let registry = new Registry()
-
-    let action1 = registry.addByName('thisOne')
-    let action2 = registry.addByName('that-one-too')
-
-    action1.should.be.instanceOf(Action)
-    action2.should.be.instanceOf(Action)
-    registry.thisOne.should.equal(action1)
-    registry.thatOneToo.should.equal(action2)
-  })
-
   it('should return all actions registered', () => {
     let registry = new Registry([
       'thisOne',
-      'that-One'
+      'thatOne'
     ])
 
     let actions = registry.all()
@@ -63,9 +52,9 @@ describe('action registry', () => {
     _.keys(actions).length.should.equal(2)
   })
 
-  describe('sending by type name', () => {
+  describe('sending by action name', () => {
 
-    it('should allow sending an action by type name', () => {
+    it('should allow sending an action by name', () => {
       let action = {
         send: () => {}
       }
@@ -75,7 +64,7 @@ describe('action registry', () => {
       var mutation = { test: 'this' }
       let registry = new Registry()
 
-      registry.addAction('testThis', action)
+      registry.add('testThis', action)
 
       return registry.send('testThis', mutation).then(() => {
         send.should.be.calledWith(mutation)
@@ -83,7 +72,7 @@ describe('action registry', () => {
 
     })
 
-    it('should error if the type name does not exist', () => {
+    it('should error if the action name does not exist', () => {
       let registry = new Registry()
 
       try {
