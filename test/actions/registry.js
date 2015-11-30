@@ -61,9 +61,8 @@ describe('action registry', () => {
       let action = {
         send: () => {}
       }
-      let promise = Promise.pending()
-      promise.resolve()
-      let send = sinon.stub(action, 'send').returns(promise.promise)
+      let promise = Promise.resolve()
+      let send = sinon.stub(action, 'send').returns(promise)
       var mutation = { test: 'this' }
       let registry = new Registry()
 

@@ -30,7 +30,7 @@ export default class Action {
       })
       .catch(err => {
         this._notify('failed', copy)
-        throw err
+        return Promise.reject(err)
       })
   }
   
