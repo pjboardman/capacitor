@@ -15,6 +15,7 @@ describe('action registry', () => {
     })
 
     registry.thisOne.should.be.instanceOf(Action)
+    registry.thisOne.name.should.equal('thisOne')
     registry.thatOne.should.be.instanceOf(Action)
   })
 
@@ -25,6 +26,7 @@ describe('action registry', () => {
     ])
 
     registry.thisOne.should.be.instanceOf(Action)
+    registry.thisOne.name.should.equal('thisOne')
     registry.thatOne.should.be.instanceOf(Action)
   })
 
@@ -37,6 +39,7 @@ describe('action registry', () => {
     registry.add('otherThings')
 
     registry.thingsAndStuff.should.equal(thingsAndStuff)
+    registry.thingsAndStuff.name.should.equal('thingsAndStuff')
     registry.otherThings.should.be.instanceOf(Action)
   })
 

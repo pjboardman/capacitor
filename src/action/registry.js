@@ -41,12 +41,21 @@ export default class Registry {
 
   _addAction(name, action) {
     action = action || new Action()
+    Object.defineProperty(action, 'name', this._getNameDescriptor(name))
     this._actions[name] = action
-    Object.defineProperty(this, name, this._getPropertyDef(name))
+    Object.defineProperty(this, name, this._getActionDescriptor(name))
     return action
   }
 
-  _getPropertyDef(name) {
+  _getNameDescriptor(name) {
+    return {
+      configurable: false,
+      value: name,
+      writable: false
+    }
+  }
+
+  _getActionDescriptor(name) {
     return {
       configurable: false,
       enumerable: true,

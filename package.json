@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "babel-node ./node_modules/.bin/_mocha --recursive",
-    "test:watch": "onchange 'src/**/*.js' 'test/**/*.js' -- npm run test",
+    "test:watch": "npm run test -- --watch",
     "lint": "eslint .",
     "cover": "babel-node ./node_modules/.bin/isparta cover _mocha -- --recursive",
     "validate": "npm run lint && npm run cover"
