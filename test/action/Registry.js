@@ -3,8 +3,7 @@ import sinon from 'sinon'
 import { Promise } from 'bluebird'
 import _ from 'lodash'
 
-import Registry from '../../src/action/registry.js'
-import Action from '../../src/action'
+import Action, { Registry } from '../../src/action'
 
 describe('action registry', () => {
 
@@ -21,13 +20,13 @@ describe('action registry', () => {
 
   it('should accept a collection of action names on construction', () => {
     let registry = new Registry([
-      'thisOne',
-      'thatOne'
+      'thisTwo',
+      'thatTwo'
     ])
 
-    registry.thisOne.should.be.instanceOf(Action)
-    registry.thisOne.name.should.equal('thisOne')
-    registry.thatOne.should.be.instanceOf(Action)
+    registry.thisTwo.should.be.instanceOf(Action)
+    registry.thisTwo.name.should.equal('thisTwo')
+    registry.thatTwo.should.be.instanceOf(Action)
   })
 
   it('should allow actions to be added', () => {
@@ -45,14 +44,14 @@ describe('action registry', () => {
 
   it('should return all actions registered', () => {
     let registry = new Registry([
-      'thisOne',
-      'thatOne'
+      'thisThree',
+      'thatThree'
     ])
 
     let actions = registry.all()
     actions.thisOne.should.be.instanceOf(Action)
     actions.thatOne.should.be.instanceOf(Action)
-    _.keys(actions).length.should.equal(2)
+    _.keys(actions).length.should.be.greaterThan(2)
   })
 
   describe('sending by action name', () => {
@@ -78,7 +77,7 @@ describe('action registry', () => {
       let registry = new Registry()
 
       try {
-        registry.send('testThis')
+        registry.send('somethingThatDoesntExist')
         throw new Error('not this')
       } catch(e) {
         e.message.should.not.equal('not this')

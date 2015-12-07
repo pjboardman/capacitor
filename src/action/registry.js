@@ -1,14 +1,20 @@
 import _ from 'lodash'
 import invariant from 'invariant'
-import Action from './index.js'
+import Action from './Action.js'
+
+let _instance
 
 export default class Registry {
 
   constructor(actions) {
-    this._actions = {}
-    if (actions) {
-      this._addActions(actions)
+    if (!_instance) {
+      this._actions = {}
+      _instance = this
     }
+    if (actions) {
+      _instance._addActions(actions)
+    }
+    return _instance
   }
 
   add(name, action) {
