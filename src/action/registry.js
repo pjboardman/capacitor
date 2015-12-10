@@ -14,7 +14,7 @@ class Registry {
       return _.map(registration, this._addAction, this);
     }
 
-    return this._addAction(name)
+    return this._addAction(registration)
   }
 
   get all() {
@@ -23,7 +23,7 @@ class Registry {
 
   subscribe(name, listener) {
     var action = this._addAction(name);
-    return action.register(listener);
+    return action.subscribe(listener);
   }
 
   send(name, ...args) {

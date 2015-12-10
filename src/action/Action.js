@@ -35,13 +35,13 @@ export default class Action {
       })
   }
   
-  register(listener) {
+  subscribe(listener) {
     let id = this._id++
     this._listeners[id] = listener
     return id
   }
 
-  unregister(token) {
+  unsubscribe(token) {
     delete this._listeners[token]
   }
 
