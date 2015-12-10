@@ -1,3 +1,4 @@
+//TODO: redo registration
 import { Promise } from 'bluebird'
 import _ from 'lodash'
 import { EventEmitter } from 'fbemitter'

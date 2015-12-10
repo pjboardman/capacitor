@@ -1,28 +1,29 @@
 import _ from 'lodash'
 import invariant from 'invariant'
 import Action from './Action.js'
+import Immutable from 'seamless-immutable'
 
-let _instance
-
-export default class Registry {
+class Registry {
 
   constructor(actions) {
-    if (!_instance) {
-      this._actions = {}
-      _instance = this
-    }
-    if (actions) {
-      _instance._addActions(actions)
-    }
-    return _instance
+    this._actions =  {};
   }
 
-  add(name, action) {
-    return this._addAction(name, action)
+  register(registration) {
+    if (_.isArray(registration)) {
+      return _.map(registration, this._addAction, this);
+    }
+
+    return this._addAction(name)
   }
 
-  all() {
-    return this._actions
+  get all() {
+    return Immutable(this._actions)
+  }
+
+  subscribe(name, listener) {
+    var action = this._addAction(name);
+    return action.register(listener);
   }
 
   send(name, ...args) {
@@ -33,20 +34,10 @@ export default class Registry {
     return action.send(...args)
   }
 
-  _addActions(actions) {
-    if (_.isArray(actions)) {
-      actions = this._hydrate(actions)
-    } 
-    
-    invariant(_.isPlainObject(actions), 'Registry created with unknown payload type')
+  _addAction(name) {
+    if (this._actions[name]) return this._actions[name];
 
-    _.forOwn(actions, (v, k) => {
-      this._addAction(k, v)
-    })
-  }
-
-  _addAction(name, action) {
-    action = action || new Action()
+    let action = new Action()
     Object.defineProperty(action, 'name', this._getNameDescriptor(name))
     this._actions[name] = action
     Object.defineProperty(this, name, this._getActionDescriptor(name))
@@ -70,13 +61,7 @@ export default class Registry {
       }
     }
   }
-
-  _hydrate(names) {
-    let actions = {}
-    _.forEach(names, name => {
-      actions[name] = undefined
-    })
-    
-    return actions
-  }
 }
+
+let registry = new Registry();
+export default registry;

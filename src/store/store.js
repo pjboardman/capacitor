@@ -25,7 +25,7 @@ export default class Store {
   }
 
   _subscribe(action, subscriber) {
-    invariant(!action.name || !this._actions[action.name], 'Attempted to subscribe to an action more than once: %s', action.name)
+    invariant(!this._actions[action.name], 'Attempted to subscribe to an action more than once: %s', action.name)
     let token = action.register(subscriber)
     if (action.name) {
       this._actions[action.name] = token

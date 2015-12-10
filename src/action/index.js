@@ -1,7 +1,7 @@
 import Action from './Action'
-import Registry from './Registry'
+import registry from './Registry'
 
-export default Action
 export {
-  Registry 
+  registry,
+  Action
 }
