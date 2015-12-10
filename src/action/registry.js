@@ -5,13 +5,13 @@ import Immutable from 'seamless-immutable'
 
 class Registry {
 
-  constructor(actions) {
-    this._actions =  {};
+  constructor() {
+    this._actions =  {}
   }
 
   register(registration) {
     if (_.isArray(registration)) {
-      return _.map(registration, this._addAction, this);
+      return _.map(registration, this._addAction, this)
     }
 
     return this._addAction(registration)
@@ -22,8 +22,8 @@ class Registry {
   }
 
   subscribe(name, listener) {
-    var action = this._addAction(name);
-    return action.subscribe(listener);
+    var action = this._addAction(name)
+    return action.subscribe(listener)
   }
 
   send(name, ...args) {
@@ -35,7 +35,7 @@ class Registry {
   }
 
   _addAction(name) {
-    if (this._actions[name]) return this._actions[name];
+    if (this._actions[name]) return this._actions[name]
 
     let action = new Action()
     Object.defineProperty(action, 'name', this._getNameDescriptor(name))
@@ -63,5 +63,5 @@ class Registry {
   }
 }
 
-let registry = new Registry();
-export default registry;
+let registry = new Registry()
+export default registry

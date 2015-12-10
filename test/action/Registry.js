@@ -1,6 +1,5 @@
 import { should } from '../chai.js'
 import sinon from 'sinon'
-import { Promise } from 'bluebird'
 import _ from 'lodash'
 
 import { registry, Action } from '../../src/action'
@@ -36,7 +35,7 @@ describe('action registry', () => {
   it('should allow early-bound subscriptions', () => {
 
     //register
-    let action = registry.register('earlyBound')
+    registry.register('earlyBound')
 
     //subscribe
     let listener = sinon.stub()

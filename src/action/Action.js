@@ -1,4 +1,3 @@
-//TODO: redo registration
 import { Promise } from 'bluebird'
 import _ from 'lodash'
 import { EventEmitter } from 'fbemitter'
@@ -7,8 +6,7 @@ import Immutable from 'seamless-immutable'
 export default class Action {
 
   constructor() {
-    this._listeners = {}
-    this._id = 1
+    this._listeners = []
     this._emitter = new EventEmitter()
     this._events = [
       'started',
@@ -24,7 +22,7 @@ export default class Action {
     this._notify('started', copy)
 
     return Promise
-      .each(_.values(this._listeners), listener => { return listener(mutation) })
+      .each(this._listeners.slice(), listener => { return listener(mutation) })
       .then(() => { 
         this._notify('finished', copy)
         return mutation 
@@ -36,13 +34,19 @@ export default class Action {
   }
   
   subscribe(listener) {
-    let id = this._id++
-    this._listeners[id] = listener
-    return id
-  }
+    this._listeners.push(listener)
+    let subscribed = true
 
-  unsubscribe(token) {
-    delete this._listeners[token]
+    return {
+      unsubscribe: () => {
+        if (!subscribed) { 
+          return 
+        }
+
+        let i = this._listeners.indexOf(listener)
+        this._listeners.splice(i, 1)
+      }
+    }
   }
 
   watch(events, watcher) {
@@ -76,5 +80,4 @@ export default class Action {
       mutation: data
     })
   }
-
 }

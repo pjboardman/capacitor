@@ -2,7 +2,7 @@ import { should } from '../chai.js'
 import sinon from 'sinon'
 import 'sinon-as-promised'
 
-describe('actions', () => {
+describe.only('actions:', () => {
 
   let Action, EventEmitter, emitter
 
@@ -14,14 +14,14 @@ describe('actions', () => {
 
     let fbemitter = require('fbemitter')
     EventEmitter = sinon.stub(fbemitter, 'EventEmitter').returns(emitter)
-    Action = require('../../src/action').default
+    Action = require('../../src/action').Action
   })
 
   afterEach(() => {
     EventEmitter.restore()
   })
 
-  describe('sending an action', () => {
+  describe('sending an action:', () => {
 
     it('should return the mutation after dispatching has completed', () => {
       let mutation = { things: 'stuff' }
@@ -30,14 +30,14 @@ describe('actions', () => {
       test.send(mutation).should.become(mutation)
     })
 
-    it('should dispatch the state and mutation to all registered listeners', () => {
+    it('should dispatch the state and mutation to all subscribed listeners', () => {
       let listener1 = sinon.stub()
       let listener2 = sinon.stub()
       var mutation = { test: 'test' }
 
       let test = new Action()
-      test.register(listener1)
-      test.register(listener2)
+      test.subscribe(listener1)
+      test.subscribe(listener2)
 
       return test.send(mutation).then(() => {
         listener1.should.be.calledWith(mutation)
@@ -45,15 +45,15 @@ describe('actions', () => {
       })
     })
 
-    it('should not dispatch to listeners that unregister', () => {
+    it('should not dispatch to listeners that unsubscribe', () => {
       let listener1 = sinon.stub()
       let listener2 = sinon.stub()
       var mutation = { test: 'test' }
 
       let test = new Action()
-      test.register(listener1)
-      let token = test.register(listener2)
-      test.unregister(token)
+      test.subscribe(listener1)
+      let subscription = test.subscribe(listener2)
+      subscription.unsubscribe()
 
       return test.send(mutation).then(() => {
         listener1.should.be.calledWith(mutation)
@@ -67,8 +67,8 @@ describe('actions', () => {
       var mutation = { test: 'test' }
 
       let test = new Action()
-      test.register(listener1)
-      test.register(listener2)
+      test.subscribe(listener1)
+      test.subscribe(listener2)
 
       return test.send(mutation)
         .then(() => { throw new Error('bad') })
